@@ -1,6 +1,7 @@
 var app = {
     init: function () {
         app.getBoard();
+        app.playerInfo();
         app.setAction();
         app.clicks = [];
         app.resize();
@@ -32,11 +33,25 @@ var app = {
         for (i = 1; i <= 3; i++) {
             var boxes = [];
             for (j = 1; j <= 3; j++) {
-                boxes.push("<div class='sq col-xs-4 col-md-4' id='sq" + i + j + "'></div>");
+                boxes.push("<div class='sq col-xs-4 col-md-4 text-center text-muted' id='sq" + i + j + "'></div>");
             }
             rows.push(boxes.join(""));
         }
-        $("#board").append("<div class='row'>" + rows.join("</div><div class='row'>") + "</div>");
+        $("#board")
+                .append("<div class='row'><div class='col-xs-12 col-md-12 text-center text-primary h3'>Toc Tac Toe</div></div>")
+                .append("<div class='row'>" + rows.join("</div><div class='row'>") + "</div>");
+    },
+    playerInfo: function(){
+        $("#board").append("<div class='row'><div class='col-xs-12 col-md-12 text-center text-info h4' id='player'>Player 1 Move ("+ app.symbol.round+")</div></div>");
+    },
+    setPlayer: function(){
+        if (app.clicks.length %2 != 0) {
+            $("#player").html("Player 2 Move ("+ app.symbol.cross+")");
+        }
+        else{
+            $("#player").html("Player 1 Move ("+ app.symbol.round+")");
+        }
+        
     },
     setAction: function () {
         $(".sq").click(function () {
@@ -44,8 +59,9 @@ var app = {
             //console.log("Row", clicked[2], "Column", clicked[3]);
             if (app.clicks.indexOf(clicked[2] + clicked[3]) == -1) {
                 app.clicks.push(clicked[2] + clicked[3]);
-                if (app.clicks.length == 1)
+                if (app.clicks.length == 1){
                     $("#" + this.id).html(app.symbol.round);
+                }
                 else {
                     if (app.clicks.length % 2 != 0) {
                         $("#" + this.id).html(app.symbol.round);
@@ -56,15 +72,17 @@ var app = {
                         app.checkSoln(app.symbol.cross);
                     }
                 }
+                app.setPlayer();
             }
-            else
-                alert("Already Clicked");
+            else{
+             //   alert("Already Clicked");
+            }
         });
     },
     checkSoln: function (m) {
         if (app.clicks.length > 4) {
             app.solution.results.forEach(function (sol) {
-                count = 0;
+                count = 0;  
                 sol.forEach(function (r) {
                     if ($("#sq" + r).html() == m)
                         count++;
@@ -80,11 +98,16 @@ var app = {
         $(".sq").height($("#sq11").width());
     },
     done: function(){
-        alert("Won");
+        if (app.clicks.length %2 == 0) {
+            alert("Player 2 Won");
+        }
+        else{
+            alert("Player 1 Won");
+        }
         app.init();
     },
     draw: function(){
-        alert("Draw");
+        alert("Game Draw!!! Try Again");
         app.init();
     }
 };
