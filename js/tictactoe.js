@@ -38,7 +38,7 @@ var app = {
             rows.push(boxes.join(""));
         }
         $("#board")
-                .append("<div class='row'><div class='col-xs-12 col-md-12 text-center text-primary h3'>Toc Tac Toe</div></div>")
+                .append("<div class='row'><div class='col-xs-12 col-md-12 text-center text-primary h3'>Tic Tac Toe</div></div>")
                 .append("<div class='row'>" + rows.join("</div><div class='row'>") + "</div>");
     },
     playerInfo: function(){
