@@ -1,19 +1,12 @@
-var app = {
-    init: function () {
-        app.getBoard();
-        app.playerInfo();
-        app.setAction();
-        app.clicks = [];
-        app.resize();
-        window.onresize = function () {
-            app.resize();
-        };
-    },
-    symbol: {
+/*global $:false */
+var TickTacToe = TickTacToe || {};
+TickTacToe.module = function(){
+    var clicks = [];
+    var symbol = {
         cross: "x",
         round: "o"
-    },
-    solution: {
+    };
+    var solution = {
         results: [
             ["11", "12", "13"],
             ["21", "22", "23"],
@@ -24,15 +17,24 @@ var app = {
             ["11", "22", "33"],
             ["31", "22", "13"]
         ]
-    },
-    getBoard: function () {
+    };
+    var init = function () {
+        getBoard();
+        playerInfo();
+        setAction();
+        resize();
+        window.onresize = function () {
+            resize();
+        };
+    };
+    var getBoard = function () {
         $("#ticTacToe")
                 .html('')
                 .append("<div id='board' class='container well'></div>");
         var rows = [];
-        for (i = 1; i <= 3; i++) {
+        for (var i = 1; i <= 3; i++) {
             var boxes = [];
-            for (j = 1; j <= 3; j++) {
+            for (var j = 1; j <= 3; j++) {
                 boxes.push("<div class='sq col-xs-4 col-md-4 text-center text-muted' id='sq" + i + j + "'></div>");
             }
             rows.push(boxes.join(""));
@@ -40,74 +42,79 @@ var app = {
         $("#board")
                 .append("<div class='row'><div class='col-xs-12 col-md-12 text-center text-primary h3'>Tic Tac Toe</div></div>")
                 .append("<div class='row'>" + rows.join("</div><div class='row'>") + "</div>");
-    },
-    playerInfo: function(){
-        $("#board").append("<div class='row'><div class='col-xs-12 col-md-12 text-center text-info h4' id='player'>Player 1 Move ("+ app.symbol.round+")</div></div>");
-    },
-    setPlayer: function(){
-        if (app.clicks.length %2 != 0) {
-            $("#player").html("Player 2 Move ("+ app.symbol.cross+")");
+    };
+    var playerInfo = function(){
+        $("#board").append("<div class='row'><div class='col-xs-12 col-md-12 text-center text-info h4' id='player'>Player 1 Move ("+ symbol.round+")</div></div>");
+    };
+    var setPlayer = function(){
+        if (clicks.length %2 !== 0) {
+            $("#player").html("Player 2 Move ("+ symbol.cross+")");
         }
         else{
-            $("#player").html("Player 1 Move ("+ app.symbol.round+")");
+            $("#player").html("Player 1 Move ("+ symbol.round+")");
         }
         
-    },
-    setAction: function () {
+    };
+    var setAction = function () {
         $(".sq").click(function () {
             var clicked = this.id.split("");
             //console.log("Row", clicked[2], "Column", clicked[3]);
-            if (app.clicks.indexOf(clicked[2] + clicked[3]) == -1) {
-                app.clicks.push(clicked[2] + clicked[3]);
-                if (app.clicks.length == 1){
-                    $("#" + this.id).html(app.symbol.round);
+            if (clicks.indexOf(clicked[2] + clicked[3]) == -1) {
+                clicks.push(clicked[2] + clicked[3]);
+                if (clicks.length === 1){
+                    $("#" + this.id).html(symbol.round);
                 }
                 else {
-                    if (app.clicks.length % 2 != 0) {
-                        $("#" + this.id).html(app.symbol.round);
-                        app.checkSoln(app.symbol.round);
+                    if (clicks.length % 2 !== 0) {
+                        $("#" + this.id).html(symbol.round);
+                        checkSoln(symbol.round);
                     }
                     else {
-                        $("#" + this.id).html(app.symbol.cross);
-                        app.checkSoln(app.symbol.cross);
+                        $("#" + this.id).html(symbol.cross);
+                        checkSoln(symbol.cross);
                     }
                 }
-                app.setPlayer();
+                setPlayer();
             }
             else{
              //   alert("Already Clicked");
             }
         });
-    },
-    checkSoln: function (m) {
-        if (app.clicks.length > 4) {
-            app.solution.results.forEach(function (sol) {
+    };
+    var checkSoln = function (m) {
+        if (clicks.length > 4) {
+            var count;
+            solution.results.forEach(function (sol) {
                 count = 0;  
                 sol.forEach(function (r) {
                     if ($("#sq" + r).html() == m)
                         count++;
                 });
-                if(count == 3)
-                    app.done();
+                if(count === 3)
+                    done();
             });
-            if(app.clicks.length == 9)
-                app.draw();
+            if(clicks.length === 9)
+               draw();
         }
-    },
-    resize: function () {
+    };
+    var resize= function () {
         $(".sq").height($("#sq11").width());
-    },
-    done: function(){
-        if (app.clicks.length %2 == 0) {
+    };
+    var done= function(){
+        if (clicks.length %2 === 0) {
             alert("Player 2 Won");
         }
         else{
             alert("Player 1 Won");
         }
-        app.init();
-    },
-    draw: function(){
+        clicks = [];
+        init();
+    };
+    var draw = function(){
         alert("Game Draw!!! Try Again");
-        app.init();
-    }
-};
+        clicks = [];
+        init();
+    };
+    return {init:init,clicks:clicks,symbol:symbol,solution:solution};
+}();
+TickTacToe.module.init();
